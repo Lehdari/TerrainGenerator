@@ -3,7 +3,7 @@
 
     @version    0.1
     @author     Miika 'LehdaRi' Lehtimäki
-    @date       2015-04-18
+    @date       2015-06-18
 
 **/
 
@@ -21,11 +21,12 @@
 class Shader {
 public:
     Shader(const std::string& vsFileName, const std::string& fsFileName);
+    ~Shader(void);
 
     GLuint getId(void) const;
     /*void useShader(const Matrix4Glf& mvp,
                    const Vector3Glf& color = Vector3Glf(1.0f, 1.0f, 1.0f)) const;*/
-    void useShader(void);
+    void use(void);
 
 private:
     GLuint programId_;

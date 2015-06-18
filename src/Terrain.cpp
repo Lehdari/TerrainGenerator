@@ -15,7 +15,7 @@ void generatePerlin(void) {
     const unsigned perlinInitSize = 4;
     const unsigned perlinDepth = 5;
 
-    std::default_random_engine rnd(715517);
+    std::default_random_engine rnd(0xBADA55);
 
     printf("allocating array..\n");
     Array3D<float, edgeSize, edgeSize, edgeSize> arr;
@@ -40,39 +40,36 @@ void generatePerlin(void) {
 
     for (auto cx=0u; cx<nChunksX; ++cx) {
         for (auto cy=0u; cy<nChunksY; ++cy) {
-            if (cx*nChunksY + cy > 102) {
-                printf("creating chunk %u/%u..\n", cx*nChunksY+cy+1, nChunksX*nChunksY);
-                for (auto i=0u; i<edgeSize; ++i) {
-                    for (auto j=0u; j<edgeSize; ++j) {
-                        for (auto k=0u; k<edgeSize; ++k) {
-                            arr(i, j, k) = perlin[1][cy]->sample(edgeSize, i+0.5f, j+0.5f, k+0.5f);
-                        }
-                    }
-                    printf("sampling.. %0.2f%%\r", (i*100.0f)/(edgeSize));
-                }
-                printf("\n");
-
-                printf("saving to file..\n");
-
-                std::stringstream ss;
-                ss << "res/perlin_" << cx << "_" << cy << ".bin";
-                arr.saveToFile(ss.str());
-
-                printf("saving top layer to image..\n");
-                sf::Image img;
-                img.create(edgeSize, edgeSize);
-                for (auto i=0u; i<edgeSize; ++i) {
-                    for (auto j=0u; j<edgeSize; ++j) {
-                        float c = arr(i, j, 0)*128 + 128;
-                        if (c > 255.0f) c = 255.0f;
-                        img.setPixel(i, j, sf::Color(c, c, c));
+            printf("creating chunk %u/%u..\n", cx*nChunksY+cy+1, nChunksX*nChunksY);
+            for (auto i=0u; i<edgeSize; ++i) {
+                for (auto j=0u; j<edgeSize; ++j) {
+                    for (auto k=0u; k<edgeSize; ++k) {
+                        arr(i, j, k) = perlin[1][cy]->sample(edgeSize, i+0.5f, j+0.5f, k+0.5f);
                     }
                 }
-
-                std::stringstream imgSs;
-                imgSs << "res/test" << cx << "_" << cy << ".png";
-                img.saveToFile(imgSs.str());
+                printf("sampling.. %0.2f%%\r", (i*100.0f)/(edgeSize));
             }
+            printf("\n");
+
+            printf("saving to file..\n");
+            std::stringstream ss;
+            ss << "res/perlin_" << cx << "_" << cy << ".bin";
+            arr.saveToFile(ss.str());
+
+            printf("saving top layer to image..\n");
+            sf::Image img;
+            img.create(edgeSize, edgeSize);
+            for (auto i=0u; i<edgeSize; ++i) {
+                for (auto j=0u; j<edgeSize; ++j) {
+                    float c = arr(i, j, 0)*128 + 128;
+                    if (c > 255.0f) c = 255.0f;
+                    img.setPixel(i, j, sf::Color(c, c, c));
+                }
+            }
+
+            std::stringstream imgSs;
+            imgSs << "res/terrain" << cx << "_" << cy << ".png";
+            img.saveToFile(imgSs.str());
         }
 
         printf("generating new perlin noise data..\n");

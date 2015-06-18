@@ -3,7 +3,7 @@
 
     @version    0.1
     @author     Miika 'LehdaRi' Lehtimäki
-    @date       2015-04-18
+    @date       2015-06-18
 
 **/
 
@@ -93,18 +93,23 @@ Shader::Shader(const std::string& vsFileName, const std::string& fsFileName) {
 
     uniformPosition_MVP_ = glGetUniformLocation(programId_, "MVP");
     uniformPosition_Color_ = glGetUniformLocation(programId_, "Color");
+
+    if (vsObjectId)
+        glDeleteShader(vsObjectId);
+
+    if (fsObjectId)
+        glDeleteShader(fsObjectId);
+}
+
+Shader::~Shader(void) {
+    if (programId_)
+        glDeleteProgram(programId_);
 }
 
 GLuint Shader::getId(void) const {
     return programId_;
 }
-/*
-void Shader::useShader(const Matrix4Glf& mvp, const Vector3Glf& color) const {
-    glUseProgram(programId_);
-    glUniformMatrix4fv(uniformPosition_MVP_, 1, GL_FALSE, mvp.data());
-    glUniform3fv(uniformPosition_Color_, 1, color.data());
-}*/
 
-void Shader::useShader(void) {
+void Shader::use(void) {
     glUseProgram(programId_);
 }
